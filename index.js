@@ -7,13 +7,7 @@ const app = fastify()
 app.route({
     method: "POST",
     url: "/mail", 
-    schema: {
-        querystring: {
-            to: { type: 'string' },
-            topic: { type: 'string' },
-            value: { type: 'string' }
-        }
-    },
+    schema: {},
     handler: async (request, reply) => {
 
     console.log("sending mail...")
