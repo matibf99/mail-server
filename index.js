@@ -5,6 +5,18 @@ import "dotenv/config";
 const app = fastify()
 
 app.route({
+    method: "GET",
+    url: "/",
+    schema: {},
+    handler: async (request, reply) => {
+        reply.send({
+            "status": 200,
+            "message": "success"
+        })
+    }
+})
+
+app.route({
     method: "POST",
     url: "/mail", 
     schema: {},
@@ -45,7 +57,7 @@ app.route({
 
 }});
 
-app.listen(8990, (err, address) => {
+app.listen(8990, '0.0.0.0', (err, address) => {
     if (err) {
         console.error(err)
         process.exit(1)
