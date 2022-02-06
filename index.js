@@ -15,6 +15,8 @@ app.route({
         }
     },
     handler: async (request, reply) => {
+
+    console.log("sending mail...")
     
     let transporter = nodemailer.createTransport({
         service: "gmail",
@@ -36,11 +38,15 @@ app.route({
             "status": 200,
             "message": "success"
         })
+
+        console.log("success")
     } else {
         reply.send({
             "status": 500,
             "message": "error"
         })
+
+        console.error("error")
     }
 
 }});
