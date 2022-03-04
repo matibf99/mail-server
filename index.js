@@ -1,8 +1,29 @@
 import fastify from "fastify"
 import nodemailer from "nodemailer"
+import { google } from "googleapis"
 import "dotenv/config";
 
 const app = fastify()
+const OAuth2 = google.auth.OAuth2;
+
+/* Google config data for Gmail */
+const googleConfig = {
+    user: process.env.GOOGLE_USER,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+};
+
+/* OAuth Client for Gmail */
+const OAuth2Client = new OAuth2(
+    googleConfig.clientId, 
+    googleConfig.clientSecret
+);
+
+/* Set refresh token */
+OAuth2Client.setCredentials( 
+    { refresh_token: googleConfig.refreshToken }
+);
 
 app.route({
     method: "GET",
@@ -22,17 +43,24 @@ app.route({
     schema: {},
     handler: async (request, reply) => {
 
-    console.log("sending mail...")
+    console.log("Sending mail...")
+
+	/* Getting access token */
+    const accessToken = await OAuth2Client.getAccessToken();
     
-    let transporter = nodemailer.createTransport({
+    let transport = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: process.env.USER,
-            pass: process.env.PASSWORD,
+            type: "OAuth2",
+            user: googleConfig.user,
+            clientId: googleConfig.clientId,
+            clientSecret: googleConfig.clientSecret,
+            refreshToken: googleConfig.refreshToken,
+            accessToken: accessToken.token
         },
     });
 
-    let info = await transporter.sendMail({
+    let info = await transport.sendMail({
         from: `"IoT Sur" <${process.env.USER}>`,
         to: `${request.body.to}`,
         subject: "Tiene una nueva alerta. IoT Sur", // Subject line
@@ -45,14 +73,14 @@ app.route({
             "message": "success"
         })
 
-        console.log("success")
+        console.log("Success")
     } else {
         reply.send({
             "status": 500,
             "message": "error"
         })
 
-        console.error("error")
+        console.error("Error")
     }
 
 }});
