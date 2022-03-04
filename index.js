@@ -34,7 +34,7 @@ app.route({
 
     let info = await transporter.sendMail({
         from: `"IoT Sur" <${process.env.USER}>`,
-        to: "iotsurrr@gmail.com",
+        to: `${request.body.to}`,
         subject: "Tiene una nueva alerta. IoT Sur", // Subject line
         html: `<b>Se ha activado la alarma.</b>\n\n<p>El tópico <b>${request.body.topic}</b> alcanzó un valor de <b>${request.body.value}</b></p>`, // html body
     });
