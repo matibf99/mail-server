@@ -1,10 +1,26 @@
 import fastify from "fastify"
 import nodemailer from "nodemailer"
 import { google } from "googleapis"
+import { Telegraf } from 'telegraf'
 import "dotenv/config";
+
 
 const app = fastify()
 const OAuth2 = google.auth.OAuth2;
+/* Telegram Bot */
+const bot = new Telegraf('5256578702:AAFGoTODIUA7L7CT8vwbtKo0OZwmgN0Hh4o')
+
+/* Bot config*/
+bot.on('text', (ctx) => {
+    // Using context shortcut
+    ctx.reply(`Hola, soy el bot IotUnaj`)
+})
+
+bot.start('text',(ctx)=>{
+    ctx.reply(`Hola, soy el bot IotUnaj`)
+})
+
+bot.launch()
 
 /* Google config data for Gmail */
 const googleConfig = {
